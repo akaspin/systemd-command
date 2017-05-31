@@ -26,6 +26,9 @@ func Run(stderr, stdout io.Writer, stdin io.Reader, args ...string) (err error) 
 		cut.Attach(
 			&Restart{env}, []cut.Binder{},
 		),
+		cut.Attach(
+			&Stop{env}, []cut.Binder{},
+		),
 	)
 	cmd.SetArgs(args)
 	cmd.SetOutput(stderr)
