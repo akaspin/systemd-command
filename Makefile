@@ -25,6 +25,8 @@ dist-docker: dist/$(BIN)-$(V)-linux-amd64.tar.gz
 dist-docker-push: dist-docker
 	echo $(V) | grep dirty && exit 2 || true
 	docker push akaspin/systemd-command:$(V)
+	docker tag akaspin/systemd-command:$(V) akaspin/systemd-command:latest
+	docker push akaspin/systemd-command:latest
 
 dist: \
 	dist/$(BIN)-$(V)-linux-amd64.tar.gz
