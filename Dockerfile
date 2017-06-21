@@ -7,4 +7,4 @@ RUN apk --no-cache add --virtual .buildpack curl && \
 
 ARG V=bad
 
-ADD dist/systemd-command-$V-linux-amd64.tar.gz /usr/bin/
+ADD dist/systemd-unit-$V-linux-amd64.tar.gz /usr/bin/

@@ -1,14 +1,15 @@
-# systemd-command
+# systemd-unit
 
-Simple static-linked binary to execute SystemD commands via DBus.
+Simple static-linked binary to execute SystemD commands via DBus. Designed to 
+execute inside docker containers.
 
 ## Usage
 
 ```
-$ systemd-command start|stop|restart <unit>
+$ systemd-unit start|stop|restart|state <unit>
 ```
 
-`systemd-command` uses DBus socket (`/var/run/dbus/system_bus_socket`) to 
+`systemd-unit` uses DBus socket (`/var/run/dbus/system_bus_socket`) to 
 interact systemd.
 
 ## Run in Docker
@@ -16,5 +17,5 @@ interact systemd.
 ```
 $ docker run -ti --rm \
     -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
-    akaspin/systemd-command:latest systemd-command restart my.service
+    akaspin/systemd-unit:latest systemd-unit restart my.service
 ```

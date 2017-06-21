@@ -1,5 +1,5 @@
-REPO	= github.com/akaspin/systemd-command
-BIN     = systemd-command
+BIN     = systemd-unit
+REPO	= github.com/akaspin/$(BIN)
 
 BENCH	= .
 TESTS	= .
@@ -20,13 +20,13 @@ GOOPTS=-installsuffix cgo -ldflags '-s -w -X $(REPO)/command.V=$(V)'
 ###
 
 dist-docker: dist/$(BIN)-$(V)-linux-amd64.tar.gz
-	docker build --build-arg V=$(V) -t akaspin/systemd-command:$(V) .
+	docker build --build-arg V=$(V) -t akaspin/$(BIN):$(V) .
 
 dist-docker-push: dist-docker
 	echo $(V) | grep dirty && exit 2 || true
-	docker push akaspin/systemd-command:$(V)
-	docker tag akaspin/systemd-command:$(V) akaspin/systemd-command:latest
-	docker push akaspin/systemd-command:latest
+	docker push akaspin/$(BIN):$(V)
+	docker tag akaspin/$(BIN):$(V) akaspin/$(BIN):latest
+	docker push akaspin/$(BIN):latest
 
 dist: \
 	dist/$(BIN)-$(V)-linux-amd64.tar.gz
@@ -54,5 +54,3 @@ clean: clean-dist
 clean-dist:
 	rm -rf dist
 
-
-.PHONY: test

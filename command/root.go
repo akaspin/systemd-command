@@ -6,12 +6,12 @@ import (
 	"io"
 )
 
-type SystemdCommand struct {
+type SystemdUnit struct {
 	*cut.Environment
 }
 
-func (c *SystemdCommand) Bind(cc *cobra.Command) {
-	cc.Use = "systemd-command"
+func (c *SystemdUnit) Bind(cc *cobra.Command) {
+	cc.Use = "systemd-unit"
 }
 
 func Run(stderr, stdout io.Writer, stdin io.Reader, args ...string) (err error) {
@@ -20,14 +20,21 @@ func Run(stderr, stdout io.Writer, stdin io.Reader, args ...string) (err error) 
 		Stdin:  stdin,
 		Stdout: stdout,
 	}
+	stateEnv := &StateOptions{}
 
 	cmd := cut.Attach(
-		&SystemdCommand{env}, []cut.Binder{env},
+		&SystemdUnit{env}, []cut.Binder{env},
 		cut.Attach(
 			&Restart{env}, []cut.Binder{},
 		),
 		cut.Attach(
+			&Reload{env}, []cut.Binder{},
+		),
+		cut.Attach(
 			&Stop{env}, []cut.Binder{},
+		),
+		cut.Attach(
+			&State{env, stateEnv}, []cut.Binder{stateEnv},
 		),
 	)
 	cmd.SetArgs(args)
