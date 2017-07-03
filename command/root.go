@@ -36,6 +36,9 @@ func Run(stderr, stdout io.Writer, stdin io.Reader, args ...string) (err error) 
 		cut.Attach(
 			&State{env, stateEnv}, []cut.Binder{stateEnv},
 		),
+		cut.Attach(
+			&Version{env}, []cut.Binder{},
+		),
 	)
 	cmd.SetArgs(args)
 	cmd.SetOutput(stderr)

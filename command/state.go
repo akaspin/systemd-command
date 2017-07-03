@@ -1,11 +1,11 @@
 package command
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/akaspin/cut"
-	"github.com/coreos/go-systemd/dbus"
 	"fmt"
+	"github.com/akaspin/cut"
 	"github.com/akaspin/logx"
+	"github.com/coreos/go-systemd/dbus"
+	"github.com/spf13/cobra"
 	"os"
 )
 
@@ -16,7 +16,7 @@ type StateOptions struct {
 
 func (o *StateOptions) Bind(cc *cobra.Command) {
 	cc.Flags().StringArrayVarP(&o.Passing, "passing", "", []string{"active"}, "passing unit states")
-	cc.Flags().StringArrayVarP(&o.Warning, "warning", "", []string{"activating","deactivating"}, "warning unit states")
+	cc.Flags().StringArrayVarP(&o.Warning, "warning", "", []string{"activating", "deactivating"}, "warning unit states")
 }
 
 type State struct {

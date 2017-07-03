@@ -16,17 +16,21 @@ GOOPTS=-installsuffix cgo -ldflags '-s -w -X $(REPO)/command.V=$(V)'
 
 
 ###
-### Dist
+### Release
 ###
 
-dist-docker: dist/$(BIN)-$(V)-linux-amd64.tar.gz
-	docker build --build-arg V=$(V) -t akaspin/$(BIN):$(V) .
+release-check: $(SRC) $(SRC_TEST)
+	echo $(V) | grep -Eo '^(\d+\.)+\d+$$'
+	go vet $(PACKAGES)
+	[[ -z `gofmt -d -s -e $^` ]]
 
-dist-docker-push: dist-docker
-	echo $(V) | grep dirty && exit 2 || true
-	docker push akaspin/$(BIN):$(V)
-	docker tag akaspin/$(BIN):$(V) akaspin/$(BIN):latest
-	docker push akaspin/$(BIN):latest
+release: release-check dist/$(BIN)-$(V)-linux-amd64.tar.gz
+	-github-release -v release -r $(BIN) -t $(V) -u akaspin
+	github-release -v upload -r $(BIN) -t $(V) -u akaspin -f dist/$(BIN)-$(V)-linux-amd64.tar.gz -n $(BIN)-$(V)-linux-amd64.tar.gz
+
+###
+### Dist
+###
 
 dist: \
 	dist/$(BIN)-$(V)-linux-amd64.tar.gz
@@ -44,6 +48,13 @@ dist/%/$(BIN)-debug: $(SRC) $(SRC_VENDOR)
 	GOPATH=$(GOPATH) CGO_ENABLED=0 GOOS=$* go build $(GOOPTS) -tags debug -o $@ $(REPO)
 
 
+###
+### Code
+###
+
+sources: $(SRC) $(SRC_TEST)
+	go vet $(PACKAGES)
+	go fmt $(PACKAGES)
 
 ###
 ### clean

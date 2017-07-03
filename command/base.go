@@ -5,7 +5,7 @@ import (
 	"github.com/coreos/go-systemd/dbus"
 )
 
-func RunSystemdCmd(what string, unit ...string) (err error)  {
+func RunSystemdCmd(what string, unit ...string) (err error) {
 	conn, err := dbus.New()
 	if err != nil {
 		return

@@ -1,10 +1,14 @@
+FROM golang:1.8.3 as builder
+
+ENV REPO github.com/akaspin/systemd-unit
+ENV BIN systemd-unit
+
+WORKDIR /go/src/${REPO}
+COPY . ./
+
+RUN export V=`git describe --always --tags --dirty` && \
+    CGO_ENABLED=0 go build -installsuffix cgo -ldflags "-s -w -X ${REPO}/command.V=${V}" -o /${BIN} . && \
+    CGO_ENABLED=0 go build -installsuffix cgo -ldflags "-s -w -X ${REPO}/command.V=${V}" -tags debug -o /${BIN}-debug .
+
 FROM alpine:3.5
-
-RUN apk --no-cache add --virtual .buildpack curl && \
-    curl -sSL https://github.com/asteris-llc/smlr/releases/download/0.0.1/smlr_0.0.1_linux_amd64.tar.gz | tar -xzv -C / && \
-    mv smlr_0.0.1_linux_amd64 /usr/bin/slmr && \
-    apk del .buildpack
-
-ARG V=bad
-
-ADD dist/systemd-unit-$V-linux-amd64.tar.gz /usr/bin/
+COPY --from=builder /systemd-unit /systemd-unit-debug /usr/bin/
